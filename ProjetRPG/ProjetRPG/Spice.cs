@@ -14,5 +14,28 @@ namespace ProjetRPG
             this.effect = effect;
         }
         
+        public static void UsePaprika(HeroConstructor hero)
+        {
+            hero.SetAtt(hero.GetAtt() + 20);
+            Console.WriteLine("Votre attaque a augmenté de 20!");
+        }
+
+        public static void UseCanelle(HeroConstructor hero)
+        {
+            hero.SetDef(hero.GetDef() + 20);
+            Console.WriteLine("Votre défense a augmenté de 20!");
+        }
+        public static void UseGingembre(HeroConstructor hero, int heroMaxHp)
+        {
+            if (hero.GetHp() + 50 <= heroMaxHp)
+            {
+                hero.SetHp(hero.GetHp() + 50);
+            }
+            else
+            {
+                hero.SetHp(heroMaxHp);
+            }
+            Console.WriteLine("Vous avez récupéré 50hp !!");
+        }
     }
 }

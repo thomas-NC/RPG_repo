@@ -5,3 +5,10 @@ C:\Users\tomas\Desktop\B2\C#\RPG\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.csprojA
 C:\Users\tomas\Desktop\B2\C#\RPG\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.csproj.CoreCompileInputs.cache
 C:\Users\tomas\Desktop\B2\C#\RPG\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.exe
 C:\Users\tomas\Desktop\B2\C#\RPG\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.pdb
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\bin\Debug\ProjetRPG.exe.config
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\bin\Debug\ProjetRPG.exe
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\bin\Debug\ProjetRPG.pdb
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.csprojAssemblyReference.cache
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.csproj.CoreCompileInputs.cache
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.exe
+C:\Users\tomas\Desktop\B2\C#\RPG\RPG_repo\ProjetRPG\ProjetRPG\obj\Debug\ProjetRPG.pdb

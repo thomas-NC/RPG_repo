@@ -18,6 +18,16 @@ namespace ProjetRPG
 
         }
 
+        //public string SaveMap()
+        //{
+        //    string retour = "";
+        //    foreach  (MapCase piece in cases)
+        //    {
+        //        retour += (piece.GetX() + piece.GetY() + (string)piece.GetHeroHere() + );
+        //    }
+        //    return retour;
+        //}
+
         public void AfficheMap()
         {
             for (int i = 0; i < cases.Count; i++)
@@ -82,7 +92,7 @@ namespace ProjetRPG
                     cases[i].SetHeroHere(true);
                 }
                 
-                //instanciation des oigons
+                //instanciation des oigons des plaines
                 else if(cases[i].GetX() == 1 && cases[i].GetY() == 4)
                 {
                     cases[i].enemyHere = enemies[0];
@@ -95,8 +105,12 @@ namespace ProjetRPG
                 {
                     cases[i].enemyHere = enemies[0];
                 }
+                else if (cases[i].GetX() == 3 && cases[i].GetY() == 5)
+                {
+                    cases[i].enemyHere = enemies[0];
+                }
 
-                //ajout des patates
+                //ajout des patates des plaines
                 else if (cases[i].GetX() == 2 && cases[i].GetY() == 3)
                 {
                     cases[i].enemyHere = enemies[1];
@@ -110,7 +124,33 @@ namespace ProjetRPG
                     cases[i].enemyHere = enemies[1];
                 }
 
-                
+                //ajout des champis de la foret
+                else if (cases[i].GetX() == 1 && cases[i].GetY() == 12)
+                {
+                    cases[i].enemyHere = enemies[2];
+                }
+                else if (cases[i].GetX() == 5 && cases[i].GetY() == 12)
+                {
+                    cases[i].enemyHere = enemies[2];
+                }
+                else if (cases[i].GetX() == 4 && cases[i].GetY() == 10)
+                {
+                    cases[i].enemyHere = enemies[2];
+                }
+
+                //ajout des tomates de la foret
+                else if (cases[i].GetX() == 2 && cases[i].GetY() == 11)
+                {
+                    cases[i].enemyHere = enemies[3];
+                }
+                else if (cases[i].GetX() == 6 && cases[i].GetY() == 11)
+                {
+                    cases[i].enemyHere = enemies[3];
+                }
+                else if (cases[i].GetX() == 8 && cases[i].GetY() == 13)
+                {
+                    cases[i].enemyHere = enemies[3];
+                }
 
                 //ajout des coffres
                 else if (cases[i].GetX() == 1 && cases[i].GetY() == 3)
@@ -125,7 +165,19 @@ namespace ProjetRPG
                 {
                     cases[i].chestHere = true;
                 }
-                
+                else if (cases[i].GetX() == 1 && cases[i].GetY() == 14)
+                {
+                    cases[i].chestHere = true;
+                }
+                else if (cases[i].GetX() == 6 && cases[i].GetY() == 13)
+                {
+                    cases[i].chestHere = true;
+                }
+                else if (cases[i].GetX() == 9 && cases[i].GetY() == 11)
+                {
+                    cases[i].chestHere = true;
+                }
+
 
             }
             

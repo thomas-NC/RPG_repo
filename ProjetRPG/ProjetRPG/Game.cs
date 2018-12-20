@@ -3,29 +3,36 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 
 namespace ProjetRPG
 {
     class Game
     {
+        string docPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+
         public HeroConstructor hero;
         public Map map;
 
         //on crée la liste d'ennemis
-        public static Enemy[] enemies = new Enemy[2] 
+        public static Enemy[] enemies = new Enemy[4]
         {
-            new EnemyLegume("oignon", "legume", 150, 30),
-            new EnemyLegume("patate", "legume", 200, 20)
+            new EnemyPlaine("Oignon géant", "plaine", 150, 10, 30, 30),
+            new EnemyPlaine("Patate géante", "plaine", 200, 10, 20, 40),
+            new EnemyForet("Champigon mutant", "foret", 500, 10, 50, 100),
+            new EnemyForet("Tomate désechée", "foret", 400, 40, 20, 100)
         };
 
-        public static Ingredient[] reward = new Ingredient[1]
+        public static Ingredient[] reward = new Ingredient[2]
         {
-            new Ingredient("chair sacrée du butternut", "Chair prélevée sur l'horrible Butturnet Pourri, étonnement elle n'est pas périmée, mais extrêmement tendre et savoureuse..")
+            new Ingredient("chair sacrée du Potiron", "Chair prélevée sur l'horrible Potiron Pourri, étonnement elle n'est pas périmée, mais extrêmement tendre et savoureuse.."),
+            new Ingredient("morceau de truffe dorée", "Morceau prélevé sur la monstrueuse Truffe toxique, son odeur suffirait à faire s'évanouir la plus robuste des personnes..")
         };
 
-        public static Enemy[] boss = new Boss[1]
+        public static Enemy[] boss = new Boss[2]
         {
-            new Boss("Butternut pourri", "boss", 350, 20, reward[0])
+            new Boss("Potiron pourri", "bossplaine", 350, 20, 20, 200, reward[0]),
+            new Boss("Truffe toxique", "bossforet", 1000, 20, 20, 500, reward[1])
         };
 
         public static Herb[] herbs = new Herb[3]
@@ -52,13 +59,55 @@ namespace ProjetRPG
             new Weapon("planche à découper", "any" , 0, 10, 100),
             new Weapon("siphon", "any", 30, 10, 50)
         };
+        
+        //public void SaveGame()
+        //{
+        //    string heroinfo = (hero.GetName());
+                
+        //        using (StreamWriter outputFile = new StreamWriter(docPath + @"/TestFolder.txt", true))
+        //        {
+        //            outputFile.WriteLine("a");
+        //        }
+        //}
 
+        public void StartGameMenu()
+        {
+            while (true)
+            {
+                Console.WriteLine("------ Menu ------");
+                Console.WriteLine("1) Lancer la partie ");
+                Console.WriteLine("2) Lancer une sauvegarde(en developpement)");
+                Console.WriteLine("3) à propos ");
+                try
+                {
+                    int choix = int.Parse(Console.ReadLine());
+                    switch (choix)
+                    {
+                        case 1:
+                            StartGame();
+                            return;
+
+                        case 2:
+                            return;
+
+                        case 3:
+                            Console.WriteLine("Projet entièrement réalisé par Thomas Nguyen Cong,");
+                            Console.WriteLine("N'hésitez pas à me contacter à l'adresse mail thomas.nguyencong@ynov.com pour toute information");
+                            StartGameMenu();
+                            return;
+                    }
+                }
+                catch (Exception)
+                {
+                    Console.WriteLine("erreur lors de l'entrée, réessayez svp");
+                }
+            }
+        }
 
         public void StartGame()
         {
             //on crée le hero, on lui donne un inventaire et une liste d'attaques
             hero = HeroConstructor.CreateHero();
-
             // on génère les attaques de chaque ennemi
             foreach  (Enemy enemy in enemies)
             {
@@ -73,6 +122,8 @@ namespace ProjetRPG
             map = new Map();
             map.CreateMap();
             map.FillMap(hero, enemies);
+
+            GameRun();
         }
 
         public void GameMenu()
@@ -80,8 +131,8 @@ namespace ProjetRPG
             Console.WriteLine(" ------- Menu de Jeu -------\n");
             Console.WriteLine("1) Move");
             Console.WriteLine("2) Inventaire");
-            Console.WriteLine("3) Recettes");
-            Console.WriteLine("4) Page Perso\n");
+            Console.WriteLine("3) Page Perso");
+            Console.WriteLine("4) Créer une sauvegarde\n");
             Console.WriteLine("-----------------------------");
             try
             {
@@ -104,10 +155,14 @@ namespace ProjetRPG
                         Console.ReadLine();
                         return;
 
-                    case '4':
+                    case '3':
                         Console.Clear();
                         hero.FichePerso();
                         Console.ReadLine();
+                        return;
+
+                    case '4':
+                        Console.WriteLine();
                         return;
 
                 }
@@ -135,6 +190,10 @@ namespace ProjetRPG
                     {
                         map.SpawnBoss("plaine", 4, 9, boss[0], 1);
                     }
+                    else if (map.FindHero().GetTerrain() == "foret")
+                    {
+                        map.SpawnBoss("foret", 4, 12, boss[1], 1);
+                    }
                     currentCase.enemyHere = null;
                     currentCase.defeatedEnemy = true;
                 }
@@ -157,7 +216,7 @@ namespace ProjetRPG
                 Console.ReadLine();
                 if (content == "weapon")
                 {
-                    hero.inventory.weaponList.Add((Weapon)chest.weapon[0]);
+                    hero.inventory.weaponList.Add(chest.weapon[0]);
                     hero.SetAtt(hero.GetAtt() + chest.weapon[0].statAtt);
                     hero.SetDef(hero.GetDef() + chest.weapon[0].statDef);
                     hero.SetHp(hero.GetHp() + chest.weapon[0].statHp);
@@ -228,6 +287,14 @@ namespace ProjetRPG
             return option;
         }
 
+        public void GameRun()
+        {
+            while (hero.inventory.ingredientList.Count < 7)
+            {
+                NewFrame();
+            }
+        }
+
         public bool Fight(HeroConstructor hero, Enemy enemy)
         {
             string option;
@@ -249,17 +316,42 @@ namespace ProjetRPG
                 {
                     
                     Attack atk = enemy.ChoixAttackEnemy();
-                    if (atk.GetDamage() <= hero.GetDef())
+                    
+                    if (enemy.GetTheType() == "plaine" && atk == enemy.attackList[2])
                     {
-                        Console.WriteLine(enemy.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                        Console.WriteLine("l'attaque à été complètement bloquée!!!");
+                        EnemyPlaine.DoOgm(enemy);
                     }
-                    else
+                    else if (enemy.GetTheType() == "plaine" && atk == enemy.attackList[3])
                     {
-                        Console.WriteLine(enemy.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                        hero.SetHp(hero.GetHp() - (atk.GetDamage() + enemy.GetAtt() - hero.GetDef()));
-                        Console.WriteLine(enemy.GetName() + " vous a tappé pour " + (atk.GetDamage() + enemy.GetAtt()) + " - " + hero.GetDef() + "armure = " + (atk.GetDamage() + enemy.GetAtt() - hero.GetDef()) + " dommages");
-                        Console.WriteLine("il vous reste " + hero.GetHp() + " pvs");
+                        EnemyPlaine.DoPotager(hero, enemy);
+                    }
+                    else if (enemy.GetTheType() == "foret" && atk == enemy.attackList[2])
+                    {
+                        EnemyForet.DoOgm2(enemy);
+                    }
+                    else if (enemy.GetTheType() == "foret" && atk == enemy.attackList[3])
+                    {
+                        EnemyForet.DoDoubleBaffe(hero, enemy);
+                    }
+                    else if (enemy.GetTheType() == "bossPlaine")
+                    {
+                        Enemy.DoBasicAttack(atk, hero, enemy);
+                    }
+                    else if (enemy.GetTheType() == "bossforet" && atk == enemy.attackList[0] || atk == enemy.attackList[1])
+                    {
+                        Enemy.DoBasicAttack(atk, hero, enemy);
+                    }
+                    else if (enemy.GetTheType() == "bossforet" && atk == enemy.attackList[2])
+                    {
+                        EnemyForet.DoDoubleBaffe(hero, enemy);
+                    }
+                    else if (enemy.GetTheType() == "bossforet" && atk == enemy.attackList[3])
+                    {
+                        Boss.DoSpores(hero, enemy);
+                    }
+                    else if (atk == enemy.attackList[0] || atk == enemy.attackList[1])
+                    {
+                        Enemy.DoBasicAttack(atk, hero, enemy);
                     }
                     
                     tourJoueur = true;
@@ -289,45 +381,34 @@ namespace ProjetRPG
 
                         if (hero.GetClasse() == "Découpe" && atk == hero.GetAttacKList()[2])
                         {
-                            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                            int total = enemy.GetHp();
-                            enemy.SetHp(enemy.GetHp() - (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()));
-                            enemy.SetHp(enemy.GetHp() - (int)((atk.GetDamage() + hero.GetAtt()) / 2));
-                            enemy.SetHp(enemy.GetHp() - (int)((atk.GetDamage() + hero.GetAtt()) / 4));
-                            Console.WriteLine("Premier coup ... " + (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()));
-                            Console.WriteLine("Deuxième coup ..... " + (int)((atk.GetDamage() + hero.GetAtt()) / 2));
-                            Console.WriteLine("Troisième coup ........ " + (int)((atk.GetDamage() + hero.GetAtt()) / 4));
-                            Console.WriteLine("Total " + (total - enemy.GetHp()));
-
+                            AttackDecoupe.DoJulienne(hero, enemy);
                         }
                         else if (hero.GetClasse() == "Découpe" && atk == hero.GetAttacKList()[3])
                         {
-                            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                            if (enemy.GetHp() <= enemyHpReset/ 2)
-                            {
-                                enemy.SetHp(enemy.GetHp() - (atk.GetDamage() * 2 + hero.GetAtt() - enemy.GetDef()));
-                                Console.WriteLine("Execution!! " + (atk.GetDamage() * 2));
-                            }
-                            else
-                            {
-                                Console.WriteLine("Pas d'execution, dommages normaux..");
-                                enemy.SetHp(enemy.GetHp() - (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()));
-                            }
+                            AttackDecoupe.DoHachage(hero, enemy, enemyHpReset);
                         }
-                        else if(atk == hero.GetAttacKList()[0] || atk == hero.GetAttacKList()[1])
+                        else if (hero.GetClasse() == "Cuisson" && atk == hero.GetAttacKList()[2])
                         {
-                            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                            enemy.SetHp(enemy.GetHp() - (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()));
-                            Console.WriteLine("vous avez tappé pour " + (atk.GetDamage() + hero.GetAtt()) + " - " + enemy.GetDef() + "armure = " + (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()) + " dommages");
+                            AttackCuisson.DoFlambage(hero, enemy);
+                        }
+                        else if (hero.GetClasse() == "Cuisson" && atk == hero.GetAttacKList()[3])
+                        {
+                            AttackCuisson.DoPyrolise(hero, enemy);
+                        }
+                        else if (hero.GetClasse() == "Pâte" && atk == hero.GetAttacKList()[2])
+                        {
+                            AttackPate.DoMalaxage(hero, enemy);
+                        }
+                        else if (hero.GetClasse() == "Pâte" && atk == hero.GetAttacKList()[3])
+                        {
+                            AttackPate.DoEtalage(hero, enemy);
+                        }
+                        else if (atk == hero.GetAttacKList()[0] || atk == hero.GetAttacKList()[1])
+                        {
+                            Attack.DoBasicAttack(atk, hero, enemy);
                         }
 
-                        //if ((atk.GetDamage() + hero.GetAtt()) <= enemy.GetDef())
-                        //{
-                        //    Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
-                        //    Console.WriteLine("l'attaque à été complètement bloquée!!!");
-                        //}
                         tourJoueur = false;
-
                     }
                     else if (option == "herb")
                     {
@@ -335,41 +416,18 @@ namespace ProjetRPG
                         if (herb != null)
                         {
                             Console.WriteLine(hero.GetName() + " a utilisé: " + herb.GetName() + "!");
+
                             if (herb == herbs[0])
                             {
-                                if (enemy.GetDef() >= 20) 
-                                {
-                                    enemy.SetDef(enemy.GetDef() - 20);
-                                }
-                                else
-                                {
-                                    enemy.SetDef(0);
-                                }
-                                Console.WriteLine("la défense de " + enemy.GetName() + " est réduite de 20!");
+                                Herb.UseRomarin(enemy);
                             }
                             else if (herb == herbs[1])
                             {
-                                if (enemy.GetAtt() >= 20)
-                                {
-                                    enemy.SetAtt(enemy.GetAtt() - 20);
-                                }
-                                else
-                                {
-                                    enemy.SetAtt(0);
-                                }
-                                Console.WriteLine("l'attaque de " + enemy.GetName() + " est réduite de 20!");
+                                Herb.UseThym(enemy);
                             }
                             else if (herb == herbs[2])
                             {
-                                if (enemy.GetHp() >= 50)
-                                {
-                                    enemy.SetHp(enemy.GetHp() - 50);
-                                }
-                                else
-                                {
-                                    enemy.SetHp(1);
-                                }
-                                Console.WriteLine(enemy.GetName() + " a subi 50 points de dégats");
+                                Herb.UseCoriandre(enemy);
                             }
                         }
                         else
@@ -386,25 +444,15 @@ namespace ProjetRPG
                             Console.WriteLine(hero.GetName() + " a utilisé: " + spice.GetName() + "!");
                             if (spice == spices[0])
                             {
-                                hero.SetAtt(hero.GetAtt() + 20);
-                                Console.WriteLine("Votre attaque a augmenté de 20!");
+                                Spice.UsePaprika(hero);
                             }
                             else if (spice == spices[1])
                             {
-                                hero.SetDef(hero.GetDef() + 20);
-                                Console.WriteLine("Votre défense a augmenté de 20!");
+                                Spice.UseCanelle(hero);
                             }
                             else if (spice == spices[2])
                             {
-                                if (hero.GetHp() + 50 <= heroHpReset)
-                                {
-                                    hero.SetHp(hero.GetHp() + 50);
-                                }
-                                else
-                                {
-                                    hero.SetHp(heroHpReset);
-                                }
-                                Console.WriteLine("Vous avez récupéré 50hp !!");
+                                Spice.UseGingembre(hero, heroHpReset);
                             }
                         
                         }
@@ -427,15 +475,34 @@ namespace ProjetRPG
                 if (enemy.GetHp() <= 0)
                 {
                     Console.WriteLine(enemy.GetName() + " est mort!!");
-                    //on reset les stats du joueur et de l'ennemi
+                    //on reset les stats du joueur et de l'ennemis
                     hero.SetHp(heroHpReset);
                     hero.SetAtt(heroAttReset);
                     hero.SetDef(heroDefReset);
                     enemy.SetHp(enemyHpReset);
                     enemy.SetAtt(enemyAttReset);
                     enemy.SetDef(enemyDefReset);
-                    if (enemy.GetTheType() == "boss")
+
+                    if (hero.getXp() + enemy.xp >= hero.getNextLvl())
                     {
+                        Console.WriteLine("Vous avez gagné un niveau!!");
+                        Console.WriteLine(hero.GetName() + " passe niveau " + (hero.getLvl() + 1) + "!!!");
+                        Console.WriteLine("Hp --> +100 | Att --> +10 | Def --> +10");
+                        hero.SetXp(enemy.xp - (hero.getNextLvl() - hero.getXp()));
+                        hero.SetLvl(hero.getLvl() + 1);
+                        hero.SetNextLvl(hero.getNextLvl() * 2 + 50);
+                        hero.SetHp(hero.GetHp() + 100);
+                        hero.SetAtt(hero.GetAtt() + 10);
+                        hero.SetDef(hero.GetDef() + 10);
+                    }
+                    else if (hero.getXp() + enemy.xp < hero.getNextLvl())
+                    {
+                        hero.SetXp(hero.getXp() + enemy.xp);
+                    }
+
+                    if (enemy.GetTheType() == "bossplaine" || enemy.GetTheType() == "bossforet" || enemy.GetTheType() == "bossmer" || enemy.GetTheType() == "bossdesert" || enemy.GetTheType() == "bossmontagne" || enemy.GetTheType() == "bossruine")
+                    {
+                        Console.WriteLine("Vous avez gagné \"" + enemy.reward.GetName() + "\"!!!");
                         hero.inventory.ingredientList.Add(enemy.reward);
                     }
                     Console.ReadLine();

@@ -9,6 +9,9 @@ namespace ProjetRPG
         protected int hp;
         protected int att;
         protected int def;
+        protected int lvl = 1;
+        protected int xp = 0;
+        protected int nextLvl = 100;
         protected List<Attack> attackList = new List<Attack>();
         public Inventory inventory = new Inventory();
         public HeroConstructor(string name, string classe, int hp, int attack, int defense) : base(name)
@@ -24,7 +27,35 @@ namespace ProjetRPG
            
         }
 
+
         //getters setters
+        public void SetXp(int xp)
+        {
+            this.xp = xp;
+        }
+        public int getXp()
+        {
+            return xp;
+        }
+
+        public void SetLvl(int lvl)
+        {
+            this.lvl = lvl;
+        }
+        public int getLvl()
+        {
+            return lvl;
+        }
+
+        public void SetNextLvl(int nextLvl)
+        {
+            this.nextLvl = nextLvl;
+        }
+        public int getNextLvl()
+        {
+            return nextLvl;
+        }
+
         public void SetHp(int hp)
         {
             this.hp = hp;
@@ -76,7 +107,7 @@ namespace ProjetRPG
                 "\nVotre attaque et votre défense sont equilibrées, comme votre maitrîse des arts culinaires" +
                 "\n\nHp: 200 | Att: 10 | Def: 10" +
                 "\n Attaques: coup de poing | highkick | julienne | hachage\n\n");
-            Console.WriteLine("3) Ecole de la Découpe\n" +
+            Console.WriteLine("3) Ecole de la Pâte\n" +
                 "\nL'Ecole de l'illustre chef Marxo, vous commencez avecun rouleau a pâtisserie et un corps super musclé" +
                 "\nA force de malaxer la pâte, vous avez développé une défense incroyable" +
                 "\n\nHp: 200 | Att: 00 | Def: 20" +
@@ -109,7 +140,7 @@ namespace ProjetRPG
                                 Console.WriteLine("nom trop court ou trop long, réessayez svp: ");
                                 name2 = Console.ReadLine();
                             }
-                            HeroConstructor heroDecoupe = new EcoleDecoupe(name2, "Découpe", 200, 10, 10);
+                            HeroConstructor heroDecoupe = new EcoleDecoupe(name2, "Découpe", 200, 100, 10);
                             heroDecoupe.SetBaseAttackList();
                             heroDecoupe.SetBaseInventory();
                             return heroDecoupe;
@@ -122,7 +153,7 @@ namespace ProjetRPG
                                 Console.WriteLine("nom trop court ou trop long, réessayez svp: ");
                                 name3 = Console.ReadLine();
                             }
-                            HeroConstructor heroPate = new EcolePate(name3, "Pâte", 200, 10, 10);
+                            HeroConstructor heroPate = new EcolePate(name3, "Pâte", 200, 0, 20);
                             heroPate.SetBaseAttackList();
                             heroPate.SetBaseInventory();
                             return heroPate;
@@ -252,11 +283,11 @@ namespace ProjetRPG
         public void ShowAllInventory()
         {
             Console.WriteLine(" ---  Liste des Armes possédées  ---\n");
-            if (inventory.weaponList == null) 
+            if (inventory.weaponList.Count == 0) 
             {
                 Console.WriteLine("pas d'arme dans l'inventaire");
             }
-            else if (inventory.weaponList != null)
+            else if (inventory.weaponList.Count != 0)
             {
                 for (int i = 0; i < inventory.weaponList.Count; i++)
                 {
@@ -266,11 +297,11 @@ namespace ProjetRPG
             }
 
             Console.WriteLine("\n ---  List des Epices possédées  --- \n");
-            if (inventory.spiceList == null)
+            if (inventory.spiceList.Count == 0)
             {
                 Console.WriteLine("pas d'epice dans l'inventaire");
             }
-            else if (inventory.spiceList != null)
+            else if (inventory.spiceList.Count != 0)
             {
                 Console.WriteLine("Paprika x " + FindItems(Game.spices[0]) + " --> " + Game.spices[0].effect);
                 Console.WriteLine("Canelle x " + FindItems(Game.spices[1]) + " --> " + Game.spices[1].effect);
@@ -278,11 +309,11 @@ namespace ProjetRPG
             }
 
             Console.WriteLine("\n ---  Liste de Herbes possédées  --- \n");
-            if (inventory.herbList == null)
+            if (inventory.herbList.Count == 0)
             {
                 Console.WriteLine("pas d'herbe dans l'inventaire");
             }
-            else if (inventory.herbList != null)
+            else if (inventory.herbList.Count != 0)
             {
                 Console.WriteLine("Thym x " + FindItems(Game.herbs[0]) + " --> " + Game.herbs[0].effect);
                 Console.WriteLine("Romarin x " + FindItems(Game.herbs[1]) + " --> " + Game.herbs[1].effect);
@@ -290,16 +321,17 @@ namespace ProjetRPG
             }
 
             Console.WriteLine("\n ---  Liste des Ingrédients sacrés possédées  ---\n");
-            if (inventory.ingredientList == null)
+            if (inventory.ingredientList.Count == 0)
             {
                 Console.WriteLine("inventaire vide");
             }
-            else if (inventory.ingredientList != null)
+            else if (inventory.ingredientList.Count != 0)
             {
                 for (int i = 0; i < inventory.ingredientList.Count; i++)
                 {
-                    Console.WriteLine("Ingrédient sacré n" + (i + 1) + "--> " + inventory.ingredientList[i].GetName());
-                    Console.WriteLine("\nDescription: " + inventory.ingredientList[i].description);
+                    Console.WriteLine("Ingrédient  n" + (i + 1) + "--> " + inventory.ingredientList[i].GetName());
+                    Console.WriteLine("\nDescription: " + inventory.ingredientList[i].description + "\n\n");
+                    
                 }
             }
         }
@@ -426,7 +458,8 @@ namespace ProjetRPG
         public void FichePerso()
         {
             Console.WriteLine(" --------- Fiche Personnage --------- \n");
-            Console.WriteLine(name + " de l'école de la " + classe);
+            Console.WriteLine(name + " de l'école de la " + classe + " niveau " + lvl);
+            Console.WriteLine("xp --> " + xp + "/" + nextLvl);
             Console.WriteLine("Attaque --> " + att);
             Console.WriteLine("Défense --> " + def);
             Console.WriteLine("Hp --> " + hp + "\n");

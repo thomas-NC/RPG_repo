@@ -38,14 +38,29 @@ namespace ProjetRPG
 
         //liste des attaques de la pate
         public static AttackPate malaxage = new AttackPate("malaxage", 30, "inflige de faibles dégats ,mais augmente la défense", 25, 1);
-        public static AttackPate etalage = new AttackPate("étalage", 150, "finisher, inflige des dégats en fonction du niveau de pétrissage", 50, 0);
+        public static AttackPate etalage = new AttackPate("étalage", 150, "attaque très puissante l'utiliser fais baisser votre défense", 50, 0);
 
         public override void ShowAttack()
         {
             base.ShowAttack();
-            Console.WriteLine("cout: energie(" + this.coutEnergie + ")");
-            Console.WriteLine("petrissage: " + this.petrissage);
+            Console.WriteLine("cout: energie(" + coutEnergie + ")");
+            Console.WriteLine("petrissage: " + petrissage);
         }
 
+        public static void DoMalaxage(HeroConstructor hero, Enemy enemy)
+        {
+            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + malaxage.GetName() + "!");
+            hero.SetDef(hero.GetDef() + 10);
+            enemy.SetHp(enemy.GetHp() - (malaxage.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+            Console.WriteLine("Vous avez infligé " + (malaxage.GetDamage() + hero.GetAtt() - enemy.GetDef()) + " et gagné 10 de défense");
+        }
+
+        public static void DoEtalage(HeroConstructor hero, Enemy enemy)
+        {
+            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + etalage.GetName() + "!");
+            hero.SetDef(hero.GetDef() - 10);
+            enemy.SetHp(enemy.GetHp() - (etalage.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+            Console.WriteLine("Vous avez infligé " + (etalage.GetDamage() + hero.GetAtt() - enemy.GetDef()) + " et perdu 10 de défense");
+        }
     }
 }

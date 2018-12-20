@@ -63,11 +63,22 @@ namespace ProjetRPG
             Console.WriteLine("-effect: " + this.effect);
 
         }
-        //public virtual void DoAttack(Attack attack)
-        //{
-        //    Console.WriteLine();
-        //}
-
         
+        public static void DoBasicAttack(Attack atk, HeroConstructor hero, Enemy enemy)
+        {
+            if ((atk.GetDamage() + hero.GetAtt()) <= enemy.GetDef())
+            {
+                Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
+                Console.WriteLine("l'attaque à été complètement bloquée!!!");
+            }
+            else
+            {
+                Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + atk.GetName() + "!");
+                enemy.SetHp(enemy.GetHp() - (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+                Console.WriteLine("vous avez tappé pour " + (atk.GetDamage() + hero.GetAtt()) + " - " + enemy.GetDef() + "armure = " + (atk.GetDamage() + hero.GetAtt() - enemy.GetDef()) + " dommages");
+            }
+        }
+
+
     }
 }

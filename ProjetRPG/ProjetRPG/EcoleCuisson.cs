@@ -25,7 +25,7 @@ namespace ProjetRPG
         {
             base.SetBaseAttackList();
             this.attackList.Add(AttackCuisson.flambage);
-            this.attackList.Add(AttackCuisson.thermostat);
+            this.attackList.Add(AttackCuisson.pyrolise);
         }
 
         public override void SetBaseInventory()

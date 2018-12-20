@@ -47,5 +47,34 @@ namespace ProjetRPG
             base.ShowAttack();
             Console.WriteLine("-cout : " + this.coutEnergie + " energie and " + this.coutTranchant + " tranchant");
         }
+
+        //at
+        public static void DoJulienne(HeroConstructor hero, Enemy enemy)
+        {
+            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + julienne.GetName() + "!");
+            int total = enemy.GetHp();
+            enemy.SetHp(enemy.GetHp() - (julienne.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+            enemy.SetHp(enemy.GetHp() - (int)((julienne.GetDamage() + hero.GetAtt()) / 2));
+            enemy.SetHp(enemy.GetHp() - (int)((julienne.GetDamage() + hero.GetAtt()) / 4));
+            Console.WriteLine("Premier coup ... " + (julienne.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+            Console.WriteLine("Deuxième coup ..... " + (int)((julienne.GetDamage() + hero.GetAtt()) / 2));
+            Console.WriteLine("Troisième coup ........ " + (int)((julienne.GetDamage() + hero.GetAtt()) / 4));
+            Console.WriteLine("Total " + (total - enemy.GetHp()));
+        }
+
+        public static void DoHachage(HeroConstructor hero, Enemy enemy, int enemyMaxHp)
+        {
+            Console.WriteLine(hero.GetName() + " a lancé l'attaque: " + hachage.GetName() + "!");
+            if (enemy.GetHp() <= enemyMaxHp / 2)
+            {
+                enemy.SetHp(enemy.GetHp() - ((hachage.GetDamage() + hero.GetAtt())*2 - enemy.GetDef()));
+                Console.WriteLine("Execution!! " + ((hachage.GetDamage() + hero.GetAtt()) * 2));
+            }
+            else
+            {
+                Console.WriteLine("Pas d'execution, dommages normaux.." + (hachage.GetDamage() + hero.GetAtt()));
+                enemy.SetHp(enemy.GetHp() - (hachage.GetDamage() + hero.GetAtt() - enemy.GetDef()));
+            }
+        }
     }
 }

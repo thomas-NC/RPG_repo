@@ -10,7 +10,6 @@ namespace ProjetRPG
     {
         private int x;
         private int y;
-        private bool decouverte = false;
         private string terrain;
         private bool heroHere = false;
         public Enemy enemyHere = null;
@@ -43,16 +42,7 @@ namespace ProjetRPG
         {
             return this.y;
         }
-
-        public void SetDecouverte(bool decouverte)
-        {
-            this.decouverte = decouverte;
-        }
-        public bool GetDecouverte()
-        {
-            return this.decouverte;
-        }
-
+        
         public void SetTerrain(string terrain)
         {
             this.terrain = terrain;
@@ -157,8 +147,8 @@ namespace ProjetRPG
             }
             else if (defeatedEnemy == true && heroHere == false && bossHere == true)
             {
-                Console.ForegroundColor = ConsoleColor.Red;
-                Console.BackgroundColor = ConsoleColor.White;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.BackgroundColor = ConsoleColor.Red;
                 Console.Write("(X)");
             }
             else if (openedChest == true && heroHere == false)

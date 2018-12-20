@@ -54,7 +54,8 @@
     <Compile Include="EcoleDecoupe.cs" />
     <Compile Include="EcolePate.cs" />
     <Compile Include="Enemy.cs" />
-    <Compile Include="EnemyLegume.cs" />
+    <Compile Include="EnemyForet.cs" />
+    <Compile Include="EnemyPlaine.cs" />
     <Compile Include="Entity.cs" />
     <Compile Include="Ingredient.cs" />
     <Compile Include="Inventory.cs" />
